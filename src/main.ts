@@ -65,7 +65,7 @@ $(document).ready( () => {
       
       // Discard the last element
       // As we read in one too many after the newline
-      lines.pop();
+      //lines.pop();
 
       // Iterate through each line
       for (let line of lines) {
