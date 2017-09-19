@@ -1,4 +1,4 @@
-import { LabelData } from './../labeldata';
+import { LabelData } from './../models/labeldata';
 
 export class Printer {
 

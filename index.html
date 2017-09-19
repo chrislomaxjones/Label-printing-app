@@ -14,8 +14,8 @@
     <link rel="stylesheet" href="styles/base.css">
   </head>
   <body>
-    <div class="container-fluid app">
-      <div class="app-inner"> 
+    <div class="container-fluid app" id="app-container">
+      <div class="app-inner" id="app"> 
         <header class="row">
           <div class="col-lg-12 col-md-12 col-sm-12">
             <h1>Spheric Label App</h1>
@@ -27,35 +27,18 @@
           </div>
         </header>
 
-        <div class="row page" id="form-bindings">
-          <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="row page">
+          <div class="col-lg-12 col-md-12 col-sm-12" >
             <header>
               <h2>Search order and line</h2>
             </header>
-            
-            <form novalidate> <!-- Vue app that manages selection of sales order number and line number -->
-              <div class="form-group">
-                  <label for="selectSalesOrder">Sales order:</label>
-                  <select class="form-control" id="selectSalesOrder" v-model="selectedOrderNumber" required>
-                    <option disabled value="">Please select one</option>      
-                    <option v-for="order in orders" :value="order.orderNumber">{{order.orderNumber}}</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="selectLineNumber">Line number:</label>
-                  <select class="form-control" id="selectLineNumber" v-model="selectedLineNumber" required>
-                    <option disabled value="">Please select one</option>
-                    <option v-for="lineNumber in selectedOrder().lineNumbers">{{lineNumber}}</option>
-                  </select>
-                  <div class="invalid-feedback">
-                      Please provide a valid line number.
-                  </div>
-                </div>
-              </form>          
+            <select-form-component :imported-orders="importedData"
+                                   v-on:order-number-changed="orderNumberChanged"
+                                   v-on:line-number-changed="lineNumberChanged"></select-form-component>            
           </div>
         </div>
 
-        <div class="row page"  id="print-table-body">
+        <div class="row page">
           <div class="col-lg-12 col-md-12 col-sm-12">
             <header>
               <h2>Select lots to print</h2>
@@ -78,7 +61,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="label in labels" is="print-data-line" :label="label"></tr>            
+                <tr v-for="label in filteredImportedData" is="print-lot-component" :label="label"></tr>            
               </tbody>
             </table>
           </div>
@@ -88,8 +71,8 @@
           <div class="col-lg-12 col-md-12 col-sm-12">
             <header>
                 <h2>Add information to labels</h2>
-                <h5>Sales order: ?</h5>
-                <h5>Line number: ?</h5>
+                <h5>Sales order: {{selectedOrderNumber}}</h5>
+                <h5>Line number: {{selectedLineNumber}}</h5>
               </header>
 
             <table class="table table-sm table-responsive table-hover table-bordered">
@@ -108,54 +91,8 @@
                   <th>Copies to print</th>
                 </tr>
               </thead>
-              <tbody id="user-table-body">
-                <tr v-for="label in labels" is="user-data-line" :label="label"></tr>
-                <!--<tr>
-                    <td>00/9988/01</td>
-                    <td>CHR-005.0000-0100</td>
-                    <td>5.0000MM Chrome Balls GD100</td>
-                    <td>DIN 5401 CLASS 3</td>
-                    <td></td>
-                    <td>
-                      <div class="input-group table-input-container">
-                          <input type="text" class="form-control" id="inputSpecNo" placeholder="+0.35u">
-                          <span class="input-group-addon" id="basic-addon2">&micro;</span>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="table-input-container">
-                        <input type="number" class="form-control" id="inputBoxQuantity" placeholder="1000">
-                      </div>
-                    </td>
-                    <td>
-                        <div class="table-input-container">
-                          <input type="number" class="form-control" id="inputCopiesToPrint" placeholder="1">
-                        </div>
-                      </td>
-                  </tr>
-                  <tr>
-                      <td>00/9988/01</td>
-                      <td>CHR-005.0000-0100</td>
-                      <td>5.0000MM Chrome Balls GD100</td>
-                      <td>DIN 5401 CLASS 3</td>
-                      <td></td>
-                      <td>
-                        <div class="input-group table-input-container">
-                            <input type="text" class="form-control" id="inputSpecNo" placeholder="+0.35u">
-                            <span class="input-group-addon" id="basic-addon2">&micro;</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="table-input-container">
-                          <input type="number" class="form-control" id="inputBoxQuantity" placeholder="1000">
-                        </div>
-                      </td>
-                      <td>
-                          <div class="table-input-container">
-                            <input type="number" class="form-control" id="inputCopiesToPrint" placeholder="1">
-                          </div>
-                        </td>
-                    </tr>-->
+              <tbody>
+                <tr v-for="label in selectedFilteredImportedData" is="user-lot-component" :label="label"></tr>
               </tbody>
             </table>
           </div>
@@ -170,13 +107,7 @@
         </div>
 
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12" id="pagination-container">
-            <!--<nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                  <li class="page-item"><a class="page-link previous" href="#">Previous</a></li>
-                  <li class="page-item"><a class="page-link next" href="#">Next</a></li>
-                </ul>
-            </nav>-->
+          <div class="col-lg-12 col-md-12 col-sm-12">
             <pagination-component v-on:navigation-changed="pageChange"></pagination-component>
           </div>
         </div>

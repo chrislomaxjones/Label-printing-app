@@ -1,6 +1,8 @@
 // Import Vue framework
 import Vue, { ComponentOptions } from "vue";
-import { LabelData } from "../labeldata";
+
+// Import data model for each lot
+import { LabelData } from "../models/labeldata";
 
 export default Vue.extend({
   template: `
@@ -31,6 +33,4 @@ export default Vue.extend({
   data: { 
     label : LabelData
   },
-  methods: { },
-  computed: { },
 });

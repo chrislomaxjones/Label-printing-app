@@ -1,3 +1,4 @@
+// Import Vue framework
 import Vue, { ComponentOptions } from "vue";
 
 export default Vue.extend({
@@ -9,14 +10,6 @@ export default Vue.extend({
     </ul>
   </nav>
   `,
-  props: {
-  },
-  data: function() {
-    return {
-      currentPage: 0,
-      pages: []
-    }
-  },
   mounted: function() {
     NavigationController.initialize();    
   },
@@ -40,7 +33,7 @@ export default Vue.extend({
       // Perform the actual DOM manipulation required to change page
       NavigationController.pageBackward();
     }
-  }
+  },
 });
 
 /**

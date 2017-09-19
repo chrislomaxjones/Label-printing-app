@@ -1,9 +1,12 @@
 // Import Vue framework
 import Vue, { ComponentOptions } from "vue";
-import { LabelData } from "../labeldata";
+
+// Import label data model
+import { LabelData } from "../models/labeldata";
 
 export default Vue.extend({
-  template: `<tr>
+  template: `
+  <tr>
       <td>{{label.csvData.serialNumber}}</td>
       <td>{{label.csvData.customerPartNumber}}</td>
       <td>{{label.csvData.description1}}</td>
@@ -21,6 +24,4 @@ export default Vue.extend({
   data: { 
     label : LabelData
   },
-  methods: { },
-  computed: { },
 });

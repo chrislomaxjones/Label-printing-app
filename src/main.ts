@@ -1,56 +1,23 @@
+// Import frameworks
 import * as $ from "jquery";
-
 import Vue, { ComponentOptions } from "vue";
 
-import PrintDataLine from "./components/print-line";
-import UserDataLine from "./components/user-line";
-import PaginationComponent from "./components/pagination";
+// Import the data models
+import { CSVData, LabelData } from "./models/labeldata";
+import { OrderLineData, generateOrderAndLineNumbers } from "./models/orderlinedata";
 
-import { CSVData, LabelData } from "./labeldata";
-import { OrderLineData } from "./orderlinedata";
+// Import the components
+import PrintLotComponent from "./components/print-lot-component";
+import UserLotComponent from "./components/user-lot-component";
+import PaginationComponent from "./components/pagination-component";
+import SelectFormComponent from "./components/select-form-componet";
 
+// Import the file that controls the printing facility
 import { Printer } from './printing/printer';
 
-/**
- * 
- */
-function generateOrderAndLineNumbers(data : LabelData[]) {
-  // Initialize empty array of orders
-  let orders : OrderLineData[] = [];
+// ----------------------------------------------------------------------------
 
-  // Form list of sales orders and line numbers for each lot
-  // Iterate over each lot in the imported data
-  for (let line of data) {
-    // Check if this order number is already contained within orders
-    let isOrderAlreadyPresent = orders.some((value : OrderLineData, index : number) => {
-      return line.csvData.orderNumber === value.orderNumber });
-    
-    if (isOrderAlreadyPresent) {
-      // Now need to check if the line number has been entered already
-      // Filter by equality then take first element of the filtered result
-      // Only one order should match at this point so we can just take first
-      let orderIndex = orders.indexOf(orders.filter((value : OrderLineData) => {
-        return line.csvData.orderNumber === value.orderNumber })[0]);
-      
-      // Iterate over each line number already added
-      let isLinePresent = orders[orderIndex].lineNumbers.some((value : number) => {
-        return line.csvData.orderLine === value
-      });
-      
-      // If the line number isn't present then add it
-      if (!isLinePresent) {
-        orders[orderIndex].lineNumbers.push(line.csvData.orderLine);
-      }
-    } else {
-      // Otherwise if the order is not present then add it
-      orders.push(new OrderLineData(line.csvData.orderNumber, line.csvData.orderLine));
-    }
-  }
-
-  return orders;
-}
-
-// Use jQuery ajax to pull down the CSV file of label data
+// Upon the document being ready
 $(document).ready( () => {
   $.ajax({
     url : "src/data/data.csv",
@@ -63,9 +30,10 @@ $(document).ready( () => {
       // Slice to discard the header information
       let lines = result.split('\n').slice(1);
       
-      // Discard the last element
-      // As we read in one too many after the newline
-      //lines.pop();
+      // The last element of the array lines may be an empty string
+      // Depending on if the CSV is terminated with a newline
+      // So test for an empty string and pop the last element if so
+      if (/^\s*$/.test(lines[lines.length-1])) lines.pop();
 
       // Iterate through each line
       for (let line of lines) {
@@ -76,118 +44,82 @@ $(document).ready( () => {
         // and pass that into a new LabelData instance
         // and push that onto the array of data items
         importedData.push(new LabelData({
-          accountCode        : data[0],
-          description1       : data[1],
-          description2       : data[2],
-          description3       : data[3],
-          quantity           : Number(data[4]),
-          batchId            : Number(data[5]),
-          serialNumber       : data[6],
-          partNumber         : data[7],
-          orderNumber        : Number(data[8]),
-          orderLine          : Number(data[9]),
-          customerPartNumber : data[10],
-          grade              : data[11],
-          template           : data[12],
+          accountCode        : !/^\s*$/.test(data[0])  ? data[0] : undefined,
+          description1       : !/^\s*$/.test(data[1])  ? data[1] : undefined,
+          description2       : !/^\s*$/.test(data[2])  ? data[2] : undefined,
+          description3       : !/^\s*$/.test(data[3])  ? data[3] : undefined,
+          quantity           : !isNaN(Number(data[4])) ? Number(data[4]) : undefined,
+          batchId            : !isNaN(Number(data[5])) ? Number(data[5]) : undefined,
+          serialNumber       : !/^\s*$/.test(data[6])  ? data[6] : undefined,
+          partNumber         : !/^\s*$/.test(data[7])  ? data[7] : undefined,
+          orderNumber        : !isNaN(Number(data[8])) ? Number(data[8]) : undefined,
+          orderLine          : !isNaN(Number(data[9])) ? Number(data[9]) : undefined,
+          customerPartNumber : !/^\s*$/.test(data[10]) ? data[10] : undefined,
+          grade              : !/^\s*$/.test(data[11]) ? data[11] : undefined,
+          template           : !/^\s*$/.test(data[12]) ? data[12] : undefined,
         }));
       }
 
-      let generatedNumbers = generateOrderAndLineNumbers(importedData);
-      var filteredData : LabelData[] = [];
-
-      var selectedOrderNumber : Number = importedData[0].csvData.orderNumber;
-      var selectedLineNumber  : Number = importedData[0].csvData.orderLine;
-
-      class Foo extends Vue {
-        orders : LabelData[];
-        selectedOrderNumber : Number;
-        selectedLineNumber : Number;
+      class App extends Vue {
+        importedData : LabelData[];
+        filteredImportedData : LabelData[];
+        selectedFilteredImportedData : LabelData[];
+        selectedOrderNumber: number;
+        selectedLineNumber: number;
       }
 
-      let formBindings = new Foo({
-        el: '#form-bindings',
-        data() {
+      let app = new App({
+        el: "#app",
+        data: function() {
           return {
-            orders: generatedNumbers,
-            selectedOrderNumber: selectedOrderNumber,
-            selectedLineNumber: selectedLineNumber
+            importedData : importedData,
+            filteredImportedData : importedData,
+            selectedFilteredImportedData : importedData,
+            selectedOrderNumber: 0,
+            selectedLineNumber: 0,
           }
         },
-        methods: {
-          selectedOrder: function() {
-            return generatedNumbers[
-              (document.getElementById("selectSalesOrder") as HTMLSelectElement).selectedIndex - 1
-            ];
-          },
-        },
-      });
-
-
-      class Bar extends Vue {
-        labels : LabelData[];
-      }
-
-      let printTableBody = new Bar({
-        el: "#print-table-body",
-        data : function() {
-          return {
-            selectedOrderNumber: selectedOrderNumber,
-            selectedLineNumber : selectedLineNumber,
-            labels: filteredData,
-          }
-       },
         components: {
-          PrintDataLine,
-        }
-      });
-
-      let v2 = new Bar({
-        el: "#user-table-body",
-        data() {
-          return {
-            labels: filteredData,
-          }
-       },
-        components: {
-          UserDataLine,
-        }
-      });
-
-      let paginationContainerApp = new Vue({
-        el: "#pagination-container",
-        data() {
-          return {
-          }
-       },
-        components: {
+          SelectFormComponent,
           PaginationComponent,
+          PrintLotComponent,
+          UserLotComponent,
         },
         methods: {
-          pageChange(currentPage : number) {
+          pageChange : function(currentPage: number) {
             if (currentPage === 1) {          /* 1st -> 2nd page */
               // Filter out the data not pertaining to the selected order number and line number
-              printTableBody.labels = filteredData = importedData.filter((labelData : LabelData) => {
-                return (labelData.csvData.orderNumber == formBindings.selectedOrderNumber &&
-                        labelData.csvData.orderLine   == formBindings.selectedLineNumber);
+              app.filteredImportedData = importedData.filter((labelData : LabelData) => {
+                return (labelData.csvData.orderNumber == app.selectedOrderNumber &&
+                        labelData.csvData.orderLine   == app.selectedLineNumber);
               });
             } else if (currentPage === 2) {   /* 2nd -> 3rd page */
               // Filter out those which weren't selected from previous table
-              v2.labels = printTableBody.labels.filter((labelData : LabelData) => {
+              app.selectedFilteredImportedData = app.filteredImportedData.filter((labelData : LabelData) => {
                 return labelData.selectedForPrinting;
               });
             } else if (currentPage === 3) {   /* 3rd -> 4th page */
-              Printer.print(v2.labels);
+              // Print out the edited labels
+              Printer.print(app.selectedFilteredImportedData);
             }
+          },
+          orderNumberChanged: function(newSelectedOrderNumber: number) {
+            app.selectedOrderNumber = newSelectedOrderNumber;
+          },
+          lineNumberChanged: function(newSelectedLineNumber: number) {
+            app.selectedLineNumber = newSelectedLineNumber;
           }
         }
       });
 
-
-
     },
     error : (xhr, status, error) => {
-      // For now just log an error message
-      console.log(error);
+      // Display an error alert (for now)
+      alert("No CSV file found:\nStatus: " + status.toString() + "\nError: " + error);
+
+      // Possibly introduce an Error display component for the application
+      // ...
+      // ...
     },
   });
 });
