@@ -1,0 +1,52 @@
+/* Setup print dimensions */
+@media print {
+  @page {
+    margin-top: 1.52mm;
+    margin-right: 5.67mm;
+    margin-bottom: 1.52mm;
+    margin-left: 5.67mm;
+
+    padding: 0mm;
+
+    size: 89mm 36mm landscape;
+  }
+}
+* {
+  box-sizing: border-box;
+}
+
+.label {
+  border: 1px dotted black;
+
+  width: 77.66mm;
+  height: 30mm;
+  overflow: hidden;
+  page-break-after: always;
+}
+
+/* Styling for labels */
+
+body {
+  font-family: sans-serif;
+  font-size: 9pt;
+}
+
+.line {
+  display: flex;
+}
+
+.one {
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+@font-face {
+  font-family: code128;
+  src: url('./code128.ttf');
+}
+
+.barcode {
+  font-family: code128;
+  font-size: 24pt;
+}

@@ -1,0 +1,77 @@
+body { 
+  background-color: #ddd;
+  padding: 2% 4%;
+}
+
+.app {
+  padding: 3%;
+  background-color: white;
+  border-radius: 2px;
+}
+
+header h1 {
+  margin-bottom: 1%;
+}
+
+.page {
+  display: none;
+  margin: 2% 0%;
+}
+
+.page header {
+  margin-bottom: 1%;
+}
+
+.page header h2 {
+  text-align: center;
+}
+
+.page header h5 {
+  text-align: left;
+}
+
+.current-page {
+  display: block;
+}
+
+form {
+  width: 20%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+/* Special formatting for tables */
+
+.table-null-entry {
+  text-align: center;
+  color: red;
+  display: block;
+  margin: auto;
+}
+
+.form-check input {
+  margin: auto;
+}
+
+
+
+.table-input-container {
+  width: 6em;
+}
+
+.input-group {
+  width: 8em;
+}
+
+/* Temporary! */
+tr {
+  font-size: 9pt;
+}
+
+input[type="text"] {
+  font-size: 9pt;
+}
+input[type="number"] {
+  font-size: 9pt;
+}
