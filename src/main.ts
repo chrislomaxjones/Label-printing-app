@@ -86,29 +86,31 @@ $(document).ready( () => {
           UserLotComponent,
         },
         methods: {
-          pageChange : function(currentPage: number) {
-            if (currentPage === 1) {          /* 1st -> 2nd page */
+          pageChange : function(currentPageIndex: number) {
+            if (currentPageIndex === 1) {          /* 1st -> 2nd page */
               // Filter out the data not pertaining to the selected order number and line number
               app.filteredImportedData = importedData.filter((labelData : LabelData) => {
                 return (labelData.csvData.orderNumber == app.selectedOrderNumber &&
                         labelData.csvData.orderLine   == app.selectedLineNumber);
               });
-            } else if (currentPage === 2) {   /* 2nd -> 3rd page */
+            } else if (currentPageIndex === 2) {   /* 2nd -> 3rd page */
               // Filter out those which weren't selected from previous table
               app.selectedFilteredImportedData = app.filteredImportedData.filter((labelData : LabelData) => {
                 return labelData.selectedForPrinting;
               });
-            } else if (currentPage === 3) {   /* 3rd -> 4th page */
+            } else if (currentPageIndex === 3) {   /* 3rd -> 4th page */
               // Print out the edited labels
               Printer.print(app.selectedFilteredImportedData);
             }
+          },
+          validatePage: function(currentPageIndex: number) {
           },
           orderNumberChanged: function(newSelectedOrderNumber: number) {
             app.selectedOrderNumber = newSelectedOrderNumber;
           },
           lineNumberChanged: function(newSelectedLineNumber: number) {
             app.selectedLineNumber = newSelectedLineNumber;
-          }
+          },
         }
       });
 

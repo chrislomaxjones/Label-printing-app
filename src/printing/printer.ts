@@ -2,7 +2,7 @@ import { LabelData } from './../models/labeldata';
 
 export class Printer {
 
-  private static documentTemplate = `
+  private static readonly documentTemplate = `
     <!doctype html>
     <html>
       <head>
@@ -15,57 +15,78 @@ export class Printer {
 
       {{labels}}
 
-      </body>
+      </bod00/9988/01y>
     </html>
   `;
 
-  private static labelTemplate = `
+  private static readonly stdLabelTemplate = `
     <div class="label">
-      Oi oi.<br>
-      Oi oi oi<br>
-      Hello world<br>
-      Another one<br>
-      Another one<br>
-      Oi oi.<br>
-      Oi oi.<br>
-      Another one<br>
-      Oi oi.<br>
-      Oi oi.<br>
+      <table>
+        <thead>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="centred">{{logo}}PartNo.</td>
+            <td>{{customer-part-no}}</td>
+          </tr>
+          <tr class="descs">
+            <td colspan="2">
+            {{description1}} <br>
+            {{description2}} <br>
+            {{description3}}
+            </td>
+          </tr>
+          <tr>
+            <td>Spec size: {{spec-no}}</td>
+            <td>Lot no: {{serial-no}}</td>
+          </tr>
+          <tr>
+          <td>Quantity: {{quantity}}</td>
+          <td class="centred">{{barcode}}</td>
+        </tr>
+        </tbody>
+      </table>
     </div>
   `;
 
   public static print(labels : LabelData[]) {
+    // Start by opening a new window in which we'll write the label markup
     let w = window.open();
 
     let labelsString=  ``;
 
+    // Iterate through each label we wish to print
     for (let label of labels) {
+      // Print the number of copies of each individual label necessary
       for (var i = 0; i < label.userData.labelsToPrint; i++) {
-        labelsString += this.generateLabelTemplate(label);
+        // Append another label string formatted by the correct template
+        labelsString += this.generateLabelTemplate(label, this.stdLabelTemplate);
       }
     }
 
-    this.documentTemplate = this.documentTemplate.replace('{{labels}}', labelsString);
-    w.document.write(this.documentTemplate);
+    // Insert the labels string into the document string and write it to the window
+    let newDocument = this.documentTemplate.replace('{{labels}}', labelsString);
+    w.document.write(newDocument);
   }
 
-  public static generateLabelTemplate(label : LabelData) {
-    var labelString = `<div class="label">`;
+  public static generateLabelTemplate(label : LabelData, template : string) {
+    // Perform a very basic form of string interpolation on the table
+    // This will populate the template with the label data from label
+    var t = template;
 
-    // Import some csv data 
-    labelString += `Serial no: ` + label.csvData.serialNumber + `<br>`;
-    labelString += `Customer part no: ` + label.csvData.customerPartNumber + `<br>`;
-    labelString += `Description 1:` + label.csvData.description1 + `<br>`;
-    labelString += `Description 2:` + label.csvData.description2 + `<br>`;
-    labelString += `Description 3:` + label.csvData.description3 + `<br>`;
+    t = t.replace(`{{logo}}`, `<img src="templates/css/STL.jpg">`);
 
-    // Add user data
-    labelString += `Spec no:` + label.userData.specNo + `&micro;<br>`;
-    labelString += `Quantity in box:` + label.userData.boxQuantity + `<br>`;
+    t = t.replace(`{{serial-no}}`, label.csvData.serialNumber.toString());
+    t = t.replace(`{{customer-part-no}}`, label.csvData.customerPartNumber.toString());
+
+    t = t.replace(`{{description1}}`, label.csvData.description1.toString());
+    t = t.replace(`{{description2}}`, label.csvData.description2.toString());
+    t = t.replace(`{{description3}}`, label.csvData.description3.toString());
     
-    // Add barcode pertaining to customer part number
-    labelString += `<span class="barcode">` + label.csvData.customerPartNumber + `</span></div>`;
+    t = t.replace(`{{spec-no}}`, label.userData.specNo.toString());
+    t = t.replace(`{{quantity}}`, label.userData.boxQuantity.toString());
 
-    return labelString;
+    t = t.replace(`{{barcode}}`, `<span class="barcode">` + label.calculateBarcodeString() + `</span></div>`);
+    return t;
   }
 }

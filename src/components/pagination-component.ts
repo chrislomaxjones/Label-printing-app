@@ -15,21 +15,19 @@ export default Vue.extend({
   },
   methods: {
     nextPage() {
-      // Perform some validation
-      console.log("validating...");
-
       // Get the index of the next page to be rendered
-      let nextPageIndex = NavigationController.getCurrentPage() + 1;
+      let currentPageIndex = NavigationController.getCurrentPage();
+      
+      // Emit a validation event so that the page validation can be performed
+      this.$emit('validate-page', currentPageIndex);
 
-      this.$emit('navigation-changed', nextPageIndex);
+      // Emit a navigation changed event to update the data on pages
+      this.$emit('navigation-changed', currentPageIndex + 1);
 
       // Perform the actual DOM manipulation required to change page
       NavigationController.pageForward();
     },
     prevPage() {
-      // Perform some validation
-      console.log("validating...");
-
       // Perform the actual DOM manipulation required to change page
       NavigationController.pageBackward();
     }

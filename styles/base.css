@@ -40,8 +40,12 @@ form {
   margin-right: auto;
 }
 
-
 /* Special formatting for tables */
+
+table {
+  vertical-align: middle;
+}
+
 
 .table-null-entry {
   text-align: center;
@@ -54,10 +58,8 @@ form {
   margin: auto;
 }
 
-
-
 .table-input-container {
-  width: 6em;
+  width: 8em;
 }
 
 .input-group {
@@ -74,4 +76,9 @@ input[type="text"] {
 }
 input[type="number"] {
   font-size: 9pt;
+}
+
+.top-row-header {
+  font-size: 12pt;
+  text-align: center;
 }

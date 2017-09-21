@@ -1,4 +1,9 @@
 /* Setup print dimensions */
+
+
+
+/* Large address */
+/*
 @media print {
   @page {
     margin-top: 1.52mm;
@@ -16,10 +21,33 @@
 }
 
 .label {
-  border: 1px dotted black;
-
   width: 77.66mm;
   height: 30mm;
+  overflow: hidden;
+  page-break-after: always;
+}
+*/
+
+/* Shipping */
+@media print {
+  @page {
+    margin-top: 1.52mm;
+    margin-right: 5.67mm;
+    margin-bottom: 1.52mm;
+    margin-left: 5.67mm;
+
+    padding: 0mm;
+
+    size: 101mm 54mm landscape;
+  }
+}
+* {
+  box-sizing: border-box;
+}
+
+.label {
+  width: 94mm;
+  height: 51mm;
   overflow: hidden;
   page-break-after: always;
 }
@@ -31,22 +59,61 @@ body {
   font-size: 9pt;
 }
 
-.line {
-  display: flex;
+table {
+  width: 100%;
+  margin: auto;
+  height: 99%;
+  margin: auto;
+  font-size: 10pt;
 }
 
-.one {
-  flex: 1;
-  justify-content: center;
-  align-items: center;
+tr {
+  height: 20%;
+  overflow: hidden;
 }
 
+tr.descs {
+  height: 30%;
+}
+
+td {
+  padding-left: 10px;
+  vertical-align: middle;
+  border: 1px solid black;
+  max-width: 40%;
+  width: 40%;
+}
+td + td {
+  max-width: 60%;
+  width: 60%;
+}
+
+td.centred {
+  padding-left: 0;
+  text-align: center;
+}
+
+/* Styling for barcode field */
 @font-face {
   font-family: code128;
   src: url('./code128.ttf');
 }
 
+@font-face {
+  font-family: code39;
+  /*src: url('./fre3of9.ttf');*/
+  src: url('./3OF9_NEW.TTF');
+}
 .barcode {
-  font-family: code128;
-  font-size: 24pt;
+  font-family: code39;
+  font-size: 20pt;
+}
+
+/* Styling of logo img */
+img {
+  display: inline;
+  height: 20px;
+  width: auto;
+  vertical-align: middle;
+  margin: 0px 5px;
 }

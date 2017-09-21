@@ -12,6 +12,7 @@ export default Vue.extend({
       <td>{{label.csvData.description1}}</td>
       <td>{{label.csvData.description2}}</td>
       <td>{{label.csvData.description3}}</td>
+      <td>{{label.csvData.template}}</td>
       <td>
         <div class="form-check">
           <label class="form-check-label">

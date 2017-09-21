@@ -22,7 +22,7 @@ export type CSVData = {
 // May include additional information specified by the user
 export class LabelData {
   // Static values that are to be used for default fields in constructor
-  private static defaultEmptyFieldString = "-";
+  private static defaultEmptyFieldString = "";
   private static defaultEmptyFieldNumber = NaN;
 
   // Properties that are imported from the CSV file
@@ -39,6 +39,10 @@ export class LabelData {
   // This is set to false by default
   public selectedForPrinting : Boolean = false;
 
+  // Method to calculate the barcode 
+  public calculateBarcodeString() {
+    return "*" + this.csvData.serialNumber + "*";
+  }
   constructor(options? : any) {
     // Create a new csv data with the default options
     this.csvData = {
@@ -58,8 +62,8 @@ export class LabelData {
     };
 
     this.userData = {
-      specNo: "+0.0",
-      boxQuantity : LabelData.defaultEmptyFieldNumber,
+      specNo: "+0.1µm",
+      boxQuantity : 1000,
       labelsToPrint: 1
     };
 

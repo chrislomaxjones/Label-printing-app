@@ -27,10 +27,7 @@ export default {
         <option disabled value="">Please select one</option>
         <option v-for="lineNumber in selectedOrder.lineNumbers">{{lineNumber}}</option>
       </select>
-      <div class="invalid-feedback">
-        Please provide a valid line number.
-      </div>
-    </div>{{selectedOrderNumber}} // {{selectedLineNumber}}
+    </div>
   </form>
   `,
   props: [

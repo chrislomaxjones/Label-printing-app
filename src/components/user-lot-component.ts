@@ -12,10 +12,10 @@ export default Vue.extend({
     <td>{{label.csvData.description1}}</td>
     <td>{{label.csvData.description2}}</td>
     <td>{{label.csvData.description3}}</td>
+    <td>{{label.csvData.template}}</td>
     <td>
-      <div class="input-group table-input-container">
-          <input type="text" class="form-control" id="inputSpecNo" placeholder="+0.35u" v-model="label.userData.specNo">
-          <span class="input-group-addon" id="basic-addon2">&micro;</span>
+      <div class="table-input-container">
+      <input type="text" class="form-control" id="inputSpecNo" placeholder="+0.1&micro;m" v-model="label.userData.specNo">
       </div>
     </td>
     <td>
