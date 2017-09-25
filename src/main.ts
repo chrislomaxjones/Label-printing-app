@@ -7,10 +7,10 @@ import { CSVData, LabelData } from "./models/labeldata";
 import { OrderLineData, generateOrderAndLineNumbers } from "./models/orderlinedata";
 
 // Import the components
-import PrintLotComponent from "./components/print-lot-component";
-import UserLotComponent from "./components/user-lot-component";
-import PaginationComponent from "./components/pagination-component";
-import SelectFormComponent from "./components/select-form-componet";
+import PaginationComponent from "./components/pagination/pagination-component"; // DELETE
+import SelectPageComponent from "./components/selectpage/select-page-component";
+import PrintTableComponent from "./components/printtablepage/print-table-page-component";
+import UserTablePageComponent from "./components/usertablepage/user-table-page-component";
 
 // Import the file that controls the printing facility
 import { Printer } from './printing/printer';
@@ -62,10 +62,12 @@ $(document).ready( () => {
 
       class App extends Vue {
         importedData : LabelData[];
-        filteredImportedData : LabelData[];
-        selectedFilteredImportedData : LabelData[];
+        
         selectedOrderNumber: number;
         selectedLineNumber: number;
+
+        filteredImportedData : LabelData[];
+        selectedFilteredImportedData : LabelData[];
       }
 
       let app = new App({
@@ -73,17 +75,19 @@ $(document).ready( () => {
         data: function() {
           return {
             importedData : importedData,
-            filteredImportedData : importedData,
-            selectedFilteredImportedData : importedData,
+
             selectedOrderNumber: 0,
             selectedLineNumber: 0,
+
+            filteredImportedData : importedData,
+            selectedFilteredImportedData : importedData,
           }
         },
         components: {
-          SelectFormComponent,
           PaginationComponent,
-          PrintLotComponent,
-          UserLotComponent,
+          SelectPageComponent,
+          PrintTableComponent,
+          UserTablePageComponent
         },
         methods: {
           pageChange : function(currentPageIndex: number) {
@@ -103,8 +107,6 @@ $(document).ready( () => {
               Printer.print(app.selectedFilteredImportedData);
             }
           },
-          validatePage: function(currentPageIndex: number) {
-          },
           orderNumberChanged: function(newSelectedOrderNumber: number) {
             app.selectedOrderNumber = newSelectedOrderNumber;
           },
@@ -113,7 +115,6 @@ $(document).ready( () => {
           },
         }
       });
-
     },
     error : (xhr, status, error) => {
       // Display an error alert (for now)

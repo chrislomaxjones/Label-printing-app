@@ -27,18 +27,46 @@
           </div>
         </header>
 
+        <select-page-component :imported-orders="importedData"
+                               v-on:order-number-changed="orderNumberChanged"
+                               v-on:line-number-changed="lineNumberChanged"
+                               v-on:navigation-changed="pageChange"></select-page-component>
+
+        <print-table-component :selected-order-number="selectedOrderNumber"
+                               :selected-line-number="selectedLineNumber"
+                               :filtered-imported-data="filteredImportedData"
+                               v-on:navigation-changed="pageChange"></print-table-component>
+
+        <user-table-page-component :selected-order-number="selectedOrderNumber"
+                                   :selected-line-number="selectedLineNumber"
+                                   :selected-filtered-imported-data="selectedFilteredImportedData"
+                                   v-on:navigation-changed="pageChange"></user-table-page-component>     
+                                   
         <div class="row page">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <header>
+              <h2>Print here</h2>
+              <a href="#">Return to start</a>
+            </header>
+          </div>
+        </div>  
+                                      
+      </div>
+    </div>
+        <!--<div class="row page">
           <div class="col-lg-12 col-md-12 col-sm-12" >
             <header>
               <h2>Search order and line</h2>
             </header>
-            <select-form-component :imported-orders="importedData"
+            <select-form-component ref="select"
+                                   :imported-orders="importedData"
+                                   :validate-message="validateMessage"
                                    v-on:order-number-changed="orderNumberChanged"
                                    v-on:line-number-changed="lineNumberChanged"></select-form-component>            
           </div>
-        </div>
+        </div>-->
 
-        <div class="row page">
+        <!--<div class="row page">
           <div class="col-lg-12 col-md-12 col-sm-12">
             <header>
               <h2>Select lots to print</h2>
@@ -67,9 +95,10 @@
               </tbody>
             </table>
           </div>
-        </div>
+        </div>-->
 
-        <div class="row page">
+
+        <!--<div class="row page">
           <div class="col-lg-12 col-md-12 col-sm-12">
             <header>
                 <h2>Add information to labels</h2>
@@ -100,25 +129,14 @@
           </div>
         </div>
 
-        <div class="row page">
-          <div class="col-lg-12 col-md-12 col-sm-12">
-            <header>
-              <h2>Print here</h2>
-            </header>
-          </div>
-        </div>
-
         <div class="row">
           <div class="col-lg-12 col-md-12 col-sm-12">
-            <pagination-component v-on:navigation-changed="pageChange"
-                                  v-on:validate-page="validatePage"></pagination-component>
+            <pagination-component v-on:navigation-changed="pageChange"></pagination-component>
           </div>
         </div>
       </div>
-    </div>
-    
-    
-    <!-- Optional JavaScript -->
+    </div>-->
+
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>

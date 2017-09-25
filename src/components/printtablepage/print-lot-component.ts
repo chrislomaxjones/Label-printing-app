@@ -2,7 +2,7 @@
 import Vue, { ComponentOptions } from "vue";
 
 // Import label data model
-import { LabelData } from "../models/labeldata";
+import { LabelData } from "../../models/labeldata";
 
 export default Vue.extend({
   template: `

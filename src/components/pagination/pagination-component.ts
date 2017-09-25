@@ -13,14 +13,19 @@ export default Vue.extend({
   mounted: function() {
     NavigationController.initialize();    
   },
+  props: [
+    'valid'
+  ],
+  data: function () {
+    return {
+      isValid : this.$props.valid,
+    }
+  },
   methods: {
     nextPage() {
       // Get the index of the next page to be rendered
       let currentPageIndex = NavigationController.getCurrentPage();
       
-      // Emit a validation event so that the page validation can be performed
-      this.$emit('validate-page', currentPageIndex);
-
       // Emit a navigation changed event to update the data on pages
       this.$emit('navigation-changed', currentPageIndex + 1);
 
